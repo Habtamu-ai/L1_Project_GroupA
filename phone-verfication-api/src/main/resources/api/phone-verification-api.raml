@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: phone-verification-api
+
+securitySchemes:
+  basic:
+    description: |
+      
+    type: OAuth 2.0
+uses: 
+  
+  traits-lib: library/library.raml
+
+/verify:
+  get:
+    securedBy: [basic]
+    description: verify the customer phone number.
+    queryParameters:
+      phoneNumber: 
+        type: string
+        description: "customer phone number"
+        required: true
+    responses:
+      200:
+        description: Every request is answered with a response.
+        body:
+          application/json:

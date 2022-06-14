@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+		<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="75dddbc4-72e5-4365-b749-42c62b3b4a70" >
+		<http:request-connection protocol="HTTPS" host="${api.host}" />
+	</http:request-config>
+	 <http:listener-config name="phone-verification-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="phone-verification-api-config" api="phone-verification-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <validation:config name="Validation_Config" doc:name="Validation Config" doc:id="b01ff439-e644-4245-881c-33415ca3031d" />
+	<configuration doc:name="Configuration" doc:id="4712f5a1-8aeb-4706-ac7f-eff1aadadf9b" defaultErrorHandler-ref="error-handlerError_Handler" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="72bc362b-a69d-4463-81fd-1a976b7ce976" file="${mule.env}.properties" key="1234567891011121" />
+	<configuration-properties doc:name="Configuration properties" doc:id="4615e90f-6e2a-4d61-8993-16a0a195a4f9" file="${mule.env}.properties" />
+	
+</mule>

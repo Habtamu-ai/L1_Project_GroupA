@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+	<flow name="implementationFlow" doc:id="0b11adbe-d5fb-402f-b05e-80edaca9bbd9" >
+		<set-variable value="#[attributes.queryParams.phoneNumber]" doc:name="Phone Number" doc:id="959f6b19-f587-4198-87c0-75444e9bfc41" variableName="phoneNumber" />
+		<validation:is-true doc:name="Is Number" doc:id="7728ad8d-fba7-4ba8-ad0f-ec6bddff8fe1" config-ref="Validation_Config" expression="#[vars.phoneNumber matches(/^[0-9+\(\)#\.\s\/ext-]+$/)]" message="not a valid phone number" />
+		<logger level="INFO" doc:name="Logger" doc:id="6cb99929-482f-4d56-8376-1351a16a54ee" message="calling the phone verifing service for the phoneNumber:  #[vars.phoneNumber]"/>
+		<http:request method="GET" doc:name="Phone Number Verification Service Call" doc:id="51b2af1b-8672-46c1-a920-44aed8a502cc" config-ref="HTTP_Request_configuration" path="number_verification/validate">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"apikey" : p('secure::api.key')
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"number" : vars.phoneNumber
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="8a8029ae-0a43-4e74-bc99-6e9bc0c1088f" message="response of phone validate service for the phoneNumber : #[vars.phoneNumber]"/>
+		<ee:transform doc:name="Transform Message" doc:id="1da4a74c-a659-4c0f-a6cb-b80231e0bd0e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler ref="error-handlerError_Handler" />
+	</flow>
+</mule>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="phone-verification-api-test-suite.xml" />
+	<munit:test name="phone-verification-api-test-suite-get:\verify:phone-verification-api-configTest" doc:id="42768c27-4558-4109-a0b7-597231133f13" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2e9cf760-8da1-4a00-a714-487b70fd8113" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+					<munit-tools:with-attribute whereValue="Phone Number Verification Service Call" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="51b2af1b-8672-46c1-a920-44aed8a502cc" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[ output application/json &#10;---&#10;{&#10;    "valid": true,&#10;    "number": "14158586273",&#10;    "local_format": "4158586273",&#10;    "international_format": "+14158586273",&#10;    "country_prefix": "+1",&#10;    "country_code": "US",&#10;    "country_name": "United States of America",&#10;    "location": "Novato",&#10;    "carrier": "AT&amp;T Mobility LLC",&#10;    "line_type": "mobile"&#10;}&#10;&#10;]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="a823b721-c0c3-44e7-9879-b954b961ac47" >
+				<munit:attributes value='#[ { "queryParams": {"phoneNumber": 14158586273}}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\verify:phone-verification-api-config" doc:id="907df5b4-3d58-4a49-86a1-414b4e88cf97" name="get:\verify:phone-verification-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="0d6c9db1-fbcf-4d83-80b9-1160bcb18313" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="phone-verification-api-negative-phoneNumber-test-suite-get:\verify:phone-verification-api-configTest" doc:id="31104af1-1729-490d-9fa7-e02e2d15a0db" description="Test">
+			<munit:behavior>
+				<munit-tools:mock-when doc:name="Mock when" doc:id="40cf5468-f67e-424a-a0c2-78e12c71e63c" processor="http:request">
+					<munit-tools:with-attributes>
+						<munit-tools:with-attribute whereValue="GET" attributeName="method" />
+						<munit-tools:with-attribute whereValue="Phone Number Verification Service Call" attributeName="doc:name" />
+						<munit-tools:with-attribute whereValue="51b2af1b-8672-46c1-a920-44aed8a502cc" attributeName="doc:id" />
+						<munit-tools:with-attribute whereValue="HTTP_Request_configuration" attributeName="config-ref" />
+					</munit-tools:with-attributes>
+					<munit-tools:then-return>
+						<munit-tools:payload value='#[ output application/json &#10;---&#10;{&#10;    "valid": true,&#10;    "number": "14158586273",&#10;    "local_format": "4158586273",&#10;    "international_format": "+14158586273",&#10;    "country_prefix": "+1",&#10;    "country_code": "US",&#10;    "country_name": "United States of America",&#10;    "location": "Novato",&#10;    "carrier": "AT&amp;T Mobility LLC",&#10;    "line_type": "mobile"&#10;}&#10;&#10;]' />
+					</munit-tools:then-return>
+				</munit-tools:mock-when>
+			</munit:behavior>
+			<munit:execution>
+				<munit:set-event doc:name="Set Event" doc:id="3cb7ea9c-1f50-4a7c-9c97-4d0f8fa2e7a4">
+				<munit:attributes value='#[ { "queryParams": {"phoneNumber": "14158586273try"}}]' />
+				</munit:set-event>
+				<flow-ref doc:name="get:\verify:phone-verification-api-config" doc:id="165476e5-8d8c-4b09-a574-8d02c545cb42" name="get:\verify:phone-verification-api-config" />
+			</munit:execution>
+			<munit:validation>
+				<munit-tools:assert-that doc:name="Assert that" doc:id="89a4d4b5-96b0-432f-b1a3-8ef73ee12c87" expression="#[payload]" is="#[MunitTools::notNullValue()]" />
+			</munit:validation>
+		</munit:test>
+	<munit:test name="phone-verification-api-test-suite-phone-verification-api-consoleTest" doc:id="1425fd46-3923-414e-9449-15eb64dc7263" description="Test" expectedErrorType="APIKIT:ANY">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3d1affad-f285-41c5-83de-f956c7ac1829" processor="apikit:console">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="phone-verification-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to phone-verification-api-console" doc:id="b4b3cc5d-aeb0-478b-9d18-0d46841c489d" name="phone-verification-api-console"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="6481cb62-240a-47d5-8758-7c233b5876c9" is="#[MunitTools::notNullValue()]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="phone-verification-api-BAD-REQUEST-test-suite-phone-verification-api-mainTest" doc:id="e20c7286-4e6b-4bc6-a256-462542db6b7d" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="fa4e730f-1ff6-4c8d-9163-eadbb3f41c34" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="phone-verification-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to phone-verification-api-main" doc:id="cbd29061-1e7a-4aaa-ba34-a43c46e0c606" name="phone-verification-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="88571ef5-88d4-4888-8991-1757c0be5088" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+
+
+
+<munit:test name="phone-verification-api-APIKIT:NOT_FOUND-test-suite-phone-verification-api-mainTest" doc:id="bc5b8ead-889e-4db5-ae91-e450db5ee017" description="Test" expectedErrorType="APIKIT:NOT_FOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="f3aa3640-55cd-4679-aece-4c14690c0a45" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="phone-verification-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to phone-verification-api-main" doc:id="42417aca-27d3-4708-9060-f3cba8f9ae9d" name="phone-verification-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="a274cb62-d932-483b-88ea-5e0be07e87fb" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="phone-verification-api-APIKIT:METHOD_NOT_ALLOWED-test-suite-phone-verification-api-mainTest" doc:id="663ef3f8-0269-4c48-b627-80934d0248d1" description="Test" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4bc86d82-7a6f-495f-98bb-c5205cf17513" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="phone-verification-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to phone-verification-api-main" doc:id="fcc2bf82-953d-4a8f-9277-e4f4e9101fae" name="phone-verification-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="dd694cb1-29fb-4f8f-9040-a4f83bbfddd7" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="phone-verification-api-APIKIT:NOT_ACCEPTABLE-test-suite-phone-verification-api-mainTest" doc:id="ae841b3d-9746-426a-b842-36216dbb328b" description="Test" expectedErrorType="APIKIT:NOT_ACCEPTABLE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="6139a1a9-2fa0-44bb-b039-61a18da9356d" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="phone-verification-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to phone-verification-api-main" doc:id="a4c306ff-9a91-451a-9de6-a2c91446e274" name="phone-verification-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="cded2e69-ee44-4715-83f5-4926428037e6" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="phone-verification-api-APIKIT:UNSUPPORTED_MEDIA_TYPE-test-suite-phone-verification-api-mainTest" doc:id="9ac6e206-6349-4514-88c0-1413fd58603d" description="Test" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="09e161db-600f-48b9-aea9-628f3c977fe5" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="phone-verification-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to phone-verification-api-main" doc:id="07cd3185-a944-4d61-9cb3-e64627bdbb61" name="phone-verification-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="bd8bad30-3718-4b59-89bd-5c09ea147fca" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+	
+	<munit:test name="phone-verification-api-APIKIT:NOT_IMPLEMENTED-test-suite-phone-verification-api-mainTest" doc:id="83d82e54-4a1c-4ef9-8349-f1ab095b9327" description="Test" expectedErrorType="APIKIT:NOT_IMPLEMENTED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="8e8c897f-49da-4fe1-a60b-e772e80bea19" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="phone-verification-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to phone-verification-api-main" doc:id="221956bc-df41-4efe-86bd-535e9c900c1b" name="phone-verification-api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="a26e69c9-327c-4392-9833-5ab5d445f9f5" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
+	</munit:test>
+</mule>
